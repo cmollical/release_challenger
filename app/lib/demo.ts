@@ -12,7 +12,7 @@ export const examplePlan: ReleasePlan = {
   rollout: "Execute the supplied population as a production batch using the existing deletion process.",
   recovery: "Affected customer data is backed up and can be restored if necessary.",
   dependencies: "Internal deletion API, customer data backup systems, and restoration tooling.",
-  characteristics: ["Destructive"],
+  characteristics: ["Destructive", "Customer-facing", "Data-changing", "Potentially irreversible"],
 };
 
 export const demoReview: Review = {
