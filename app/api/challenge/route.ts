@@ -14,7 +14,7 @@ export async function POST(request: Request) {
     const model = process.env.OPENAI_MODEL?.trim() || "gpt-4.1-mini";
     if (!apiKey || apiKey === "your_openai_api_key") return NextResponse.json(demoReview);
     const client = new OpenAI({ apiKey });
-    const requestBody = { instructions: systemPrompt, input: `Review this release plan. Missing fields are meaningful unknowns.\n${JSON.stringify(plan)}`, text: { format: { type: "json_object" as const } } };
+    const requestBody = { instructions: systemPrompt, input: `Review this release plan. Missing fields are meaningful unknowns. Return the result as valid json.\n${JSON.stringify(plan)}`, text: { format: { type: "json_object" as const } } };
     let response;
     try {
       response = await client.responses.create({ ...requestBody, model });
