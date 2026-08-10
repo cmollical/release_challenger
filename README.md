@@ -19,3 +19,5 @@ Import this repository into Vercel, then add these Project Settings → Environm
 - `OPENAI_MODEL` — optional; defaults to `gpt-4.1-mini`
 
 Redeploy after adding or changing environment variables. No database, authentication, or persistent storage is required.
+
+The repository includes `vercel.json` so Vercel treats the project as a Next.js app and uses the `.next` build output rather than looking for a static `public` directory.
