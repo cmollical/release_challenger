@@ -14,12 +14,16 @@ export async function POST(request: Request) {
     const model = process.env.OPENAI_MODEL?.trim() || "gpt-4.1-mini";
     if (!apiKey || apiKey === "your_openai_api_key") return NextResponse.json(demoReview);
     const client = new OpenAI({ apiKey });
-    const response = await client.responses.create({
-      model,
-      instructions: systemPrompt,
-      input: `Review this release plan. Missing fields are meaningful unknowns.\n${JSON.stringify(plan)}`,
-      text: { format: { type: "json_object" } },
-    });
+    const requestBody = { instructions: systemPrompt, input: `Review this release plan. Missing fields are meaningful unknowns.\n${JSON.stringify(plan)}`, text: { format: { type: "json_object" as const } } };
+    let response;
+    try {
+      response = await client.responses.create({ ...requestBody, model });
+    } catch (error) {
+      const isMissingModel = typeof error === "object" && error !== null && "code" in error && error.code === "model_not_found";
+      if (!isMissingModel || model === "gpt-4.1-mini") throw error;
+      console.warn(`Configured OPENAI_MODEL "${model}" was not found; retrying with gpt-4.1-mini.`);
+      response = await client.responses.create({ ...requestBody, model: "gpt-4.1-mini" });
+    }
     const raw = response.output_text;
     const review = JSON.parse(raw);
     if (!review.decision || !review.executive_summary || !review.blast_radius) throw new Error("Invalid review");
